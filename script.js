@@ -20,10 +20,6 @@ async function buscarFilmes() {
       `https://api.tvmaze.com/search/shows?q=${pesquisa}`
     );
 
-    if (!resposta.ok) {
-      throw new Error("Erro de conexão.");
-    }
-
     const dados = await resposta.json();
 
     if (dados.length === 0) {
@@ -35,12 +31,14 @@ async function buscarFilmes() {
     dados.forEach(item => {
       const serie = item.show;
 
-      const imagem = serie.image
-        ? serie.image.medium
-        : "https://via.placeholder.com/210x295?text=Sem+Imagem";
+      if (serie.image) {
+        imagem = serie.image.medium;
+      } else {
+        imagem = "https://via.placeholder.com/210x295?text=Sem+Imagem";
+      }
 
       const resumo = serie.summary
-        ? serie.summary.replace(/<[^>]*>/g, "")
+        ? serie.summary
         : "Sem sinopse disponível.";
 
       resultado.innerHTML += `
